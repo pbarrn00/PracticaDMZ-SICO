@@ -1,0 +1,70 @@
+version: '2.2'
+services:
+  fw:                           # id del servicio
+    image: bin/fw               # nombre de la imagen
+    build: ./fw                 # ruta del Dockerfile
+    container_name: fw          # identificador
+    networks:                   # id. de la red/es a las que pertenece el contenedor
+      external-network:
+        ipv4_address: 10.5.0.1  # ip estática
+      DMZ:
+        ipv4_address: 10.5.1.1
+      internal-network:
+        ipv4_address: 10.5.2.1
+    privileged: true            # permisos extendidos (CUIDADO)
+    tty: true
+
+  external:
+    image: bin/external
+    build: ./external
+    networks:
+      - external-network        # ip dinámica
+    depends_on:
+      - fw                      # Dependencias
+    scale: 3                    # numero de ejemplares, incompatible con container_name
+    privileged: true
+    tty: true
+  
+  dmz:
+    image: bin/dmz
+    build: ./dmz
+    networks:
+      - DMZ
+    depends_on:
+      - fw
+    scale: 3
+    privileged: true
+    tty: true
+
+  internal:
+    image: bin/internal
+    build: ./internal
+    networks:
+      - internal-network
+    depends_on:
+      - fw
+    scale: 3
+    privileged: true
+    tty: true
+
+networks:
+  external-network:             # id. de la red
+    driver: bridge              # mode desde el host
+    ipam:
+      config:
+        - subnet: 10.5.0.0/24   # subred
+          gateway: 10.5.0.254   # encaminador
+
+  DMZ:
+    driver: bridge              
+    ipam:
+      config:
+        - subnet: 10.5.1.0/24   
+          gateway: 10.5.1.254
+  
+  internal-network:
+    driver: bridge              
+    ipam:
+      config:
+        - subnet: 10.5.2.0/24   
+          gateway: 10.5.2.254
