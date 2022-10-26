@@ -10,4 +10,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 EXPOSE 22
 COPY ./start.sh .
 RUN chmod +x start.sh
-CMD ["./start.sh"]
+# IP Tables Script
+COPY ./iptables.sh .
+RUN chmod +x iptables.sh
+CMD ["./start.sh && ./iptables.sh"]
