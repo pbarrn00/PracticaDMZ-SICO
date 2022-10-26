@@ -1,6 +1,6 @@
 FROM balenalib/raspberry-pi:buster
 RUN apt-get update
-RUN apt-get install -y openssh-server net-tools iputils-ping traceroute vim iptables iptables-dev pkg-config
+RUN apt-get install -y openssh-server net-tools iputils-ping traceroute vim nano iproute2 iptables iptables-dev pkg-config nmap tcpdump
 RUN mkdir /var/run/sshd
 RUN echo 'root:root' |chpasswd
 RUN sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -13,4 +13,4 @@ RUN chmod +x start.sh
 # IP Tables Script
 COPY ./iptables.sh .
 RUN chmod +x iptables.sh
-CMD ["./start.sh && ./iptables.sh"]
+CMD ["./start.sh"]
