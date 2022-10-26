@@ -21,7 +21,7 @@ services:
       - external-network        # ip dinámica
     depends_on:
       - fw                      # Dependencias
-    scale: 3                    # numero de ejemplares, incompatible con container_name
+    # scale: 3                    # numero de ejemplares, incompatible con container_name
     privileged: true
     tty: true
   
@@ -32,7 +32,7 @@ services:
       - DMZ
     depends_on:
       - fw
-    scale: 3
+    # scale: 3
     privileged: true
     tty: true
 
@@ -43,7 +43,7 @@ services:
       - internal-network
     depends_on:
       - fw
-    scale: 3
+    scale: 2
     privileged: true
     tty: true
 
