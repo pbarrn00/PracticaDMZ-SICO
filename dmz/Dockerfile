@@ -10,12 +10,14 @@ RUN apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 EXPOSE 22
 COPY ./start.sh .
 RUN chmod +x start.sh
-# PREGUNTAR FORBIDEN 403 cuando meto el index.html personlaizado
-# COPY ./index.html /var/www/html/
-# COPY ./000-default.conf /etc/apache2/sites-available/
-# mkdir /etc/apache2/certificate
-# cd /etc/apache2/certificate
-# openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out apache-certificate.crt -keyout apache.key
-# https://techexpert.tips/apache/enable-https-apache/
-# RUN service apache2 restart
+# HTTPS Config (Optional)
+COPY ./index.html /var/www/html/
+# Preguntar FORBIDEN 403 cuando meto el index.html personalizado, A DELA NO LE PASA
+RUN chmod 644 /var/www/html/index.html
+RUN mkdir /etc/apache2/certificate
+RUN openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out /etc/apache2/certificate/apache-certificate.crt -keyout /etc/apache2/certificate/apache.key -subj "/C=ES/ST=CYL/L=Leon/O=ULE/CN=pdelam01"
+COPY ./000-default.conf /etc/apache2/sites-available/
+# Solucionar error de apache2: Invalid command 'SSLProxyEngine', perhaps misspelled or defined by a module not included in the server configuration
+RUN a2enmod ssl 
+RUN service apache2 restart
 CMD ["./start.sh"]
