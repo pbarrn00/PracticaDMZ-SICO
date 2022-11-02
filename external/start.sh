@@ -4,4 +4,5 @@
 # No podemos poner IPs repetidas en el fichero docker-compose.yml
 route add default gw 10.5.0.1
 route del default gw 10.5.0.254
+service apache2 start
 /usr/sbin/sshd -D
