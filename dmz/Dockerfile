@@ -10,4 +10,12 @@ RUN apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 EXPOSE 22
 COPY ./start.sh .
 RUN chmod +x start.sh
+# PREGUNTAR FORBIDEN 403 cuando meto el index.html personlaizado
+# COPY ./index.html /var/www/html/
+# COPY ./000-default.conf /etc/apache2/sites-available/
+# mkdir /etc/apache2/certificate
+# cd /etc/apache2/certificate
+# openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out apache-certificate.crt -keyout apache.key
+# https://techexpert.tips/apache/enable-https-apache/
+# RUN service apache2 restart
 CMD ["./start.sh"]

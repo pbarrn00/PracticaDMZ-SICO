@@ -45,5 +45,8 @@ iptables -t nat -A POSTROUTING -o eth1 -s 10.5.2.0/24 -j SNAT --to 10.5.0.1
 iptables -A FORWARD -p tcp -o eth0 -d 10.5.1.20 --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT
 # iptables -A OUTPUT -p tcp -o eth0 -s 10.5.1.20 --sport 80 -m state --state ESTABLISHED -j ACCEPT                      *PREGUNTA: ¿OUTPUT no sería necesario?*
 
+# Acceso TCP desde cualquier máquina (interna o externa) a la máquina dmz1 (IP 10.5.1.20), exclusivamente al servicio HTTPS (puerto 443).
+iptables -A FORWARD -p tcp -o eth0 -d 10.5.1.20 --dport 443 -m state --state NEW,ESTABLISHED -j ACCEPT
+
 # Acceso SSH desde int1 (10.5.2.20) a dmz1
 iptables -A FORWARD -p tcp -i eth2 -s 10.5.2.20 -o eth0 -d 10.5.1.20 --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
