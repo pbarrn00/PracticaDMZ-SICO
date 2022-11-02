@@ -19,7 +19,15 @@ iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 # Permitir consultas entrantes de tipo ICMP ECHO REQUEST.
 iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
 
-# Comprobar que el tráfico Forward sale por las interfaces de red correctas.
+# Permitir el tráfico de conexiones establecidas y relacionadas para TCP, UDP y ICMP.
+# Reglas que permiten el tráfico de cualquier interfaz
+# 
+# iptables -A FORWARD -p tcp -m state --state ESTABLISHED,RELATED -j ACCEPT
+# iptables -A FORWARD -p udp -m state --state ESTABLISHED,RELATED -j ACCEPT
+# iptables -A FORWARD -p icmp -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Permitir el tráfico de conexiones establecidas y relacionadas para TCP, UDP y ICMP.
+# Comprobar que el tráfico FORWARD sale por las interfaces de red correctas.
 iptables -A FORWARD -p tcp -i eth2 -o eth1 -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -A FORWARD -p udp -i eth2 -o eth1 -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -A FORWARD -p icmp -i eth2 -o eth1 -m state --state ESTABLISHED,RELATED -j ACCEPT
