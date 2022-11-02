@@ -1,6 +1,6 @@
 FROM balenalib/raspberry-pi:buster
 RUN apt update
-RUN apt install -y openssh-server net-tools iputils-ping traceroute vim nano iproute2 iptables iptables-dev pkg-config nmap tcpdump
+RUN apt install -y openssh-server net-tools iputils-ping traceroute vim nano iproute2 iptables iptables-dev pkg-config nmap tcpdump wget curl
 RUN mkdir /var/run/sshd
 RUN echo 'root:root' |chpasswd
 RUN sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config
