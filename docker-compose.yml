@@ -18,7 +18,8 @@ services:
     image: bin/external
     build: ./external
     networks:
-      - external-network        # ip dinámica
+      external-network:        # ip dinámica
+        ipv4_address: 10.5.0.20 # ip estática
     depends_on:
       - fw                      # Dependencias
     # scale: 3                    # numero de ejemplares, incompatible con container_name
@@ -29,21 +30,33 @@ services:
     image: bin/dmz
     build: ./dmz
     networks:
-      - DMZ
+      DMZ:
+        ipv4_address: 10.5.1.20 # ip estática
     depends_on:
       - fw
     # scale: 3
     privileged: true
     tty: true
 
-  internal:
+  internal1:
     image: bin/internal
     build: ./internal
     networks:
-      - internal-network
+      internal-network:
+        ipv4_address: 10.5.2.20 # ip estática
     depends_on:
       - fw
-    scale: 2
+    privileged: true
+    tty: true
+
+  internal2:
+    image: bin/internal
+    build: ./internal
+    networks:
+      internal-network:
+        ipv4_address: 10.5.2.21 # ip estática
+    depends_on:
+      - fw
     privileged: true
     tty: true
 
