@@ -3,6 +3,7 @@ RUN apt update
 RUN apt install -y openssh-server net-tools iputils-ping traceroute vim nano iproute2 iptables iptables-dev pkg-config nmap tcpdump
 RUN mkdir /var/run/sshd
 RUN echo 'root:root' |chpasswd
+WORKDIR /root
 RUN sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config
 RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
 RUN mkdir /root/.ssh
