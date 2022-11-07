@@ -1,11 +1,18 @@
 FROM balenalib/raspberry-pi:buster
 RUN apt update
-RUN apt install -y openssh-server net-tools iputils-ping traceroute vim nano iproute2 iptables iptables-dev pkg-config nmap tcpdump apache2 wget curl
+RUN apt install -y openssh-server net-tools iputils-ping traceroute vim nano iproute2 iptables iptables-dev pkg-config nmap tcpdump apache2 wget curl libpam-google-authenticator
 RUN mkdir /var/run/sshd
 RUN echo 'root:root' |chpasswd
-RUN sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config
-RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
+WORKDIR /root
+# COPY ./sshd_config /etc/ssh/sshd_config
+COPY ./sshd_config /etc/ssh/
+# RUN sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+# RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
 RUN mkdir /root/.ssh
+# RUN touch /root/.ssh/authorized_keys
+# RUN chmod 640 /root/.ssh/authorized_keys
+COPY ./banner /etc/ssh/
+COPY ./sshd /etc/pam.d/
 RUN apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 EXPOSE 22
 COPY ./start.sh .
@@ -20,4 +27,7 @@ COPY ./000-default.conf /etc/apache2/sites-available/
 # Solucionar error de apache2: Invalid command 'SSLProxyEngine', perhaps misspelled or defined by a module not included in the server configuration
 RUN a2enmod ssl 
 RUN service apache2 restart
+# Creamos un usuario no root
+RUN useradd -m -d /home/user1 -s /bin/bash user1
+RUN echo 'user1:user1' |chpasswd
 CMD ["./start.sh"]

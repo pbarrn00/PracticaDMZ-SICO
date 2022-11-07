@@ -49,4 +49,7 @@ iptables -A FORWARD -p tcp -o eth0 -d 10.5.1.20 --dport 80 -m state --state NEW,
 iptables -A FORWARD -p tcp -o eth0 -d 10.5.1.20 --dport 443 -m state --state NEW,ESTABLISHED -j ACCEPT
 
 # Acceso SSH desde int1 (10.5.2.20) a dmz1
-iptables -A FORWARD -p tcp -i eth2 -s 10.5.2.20 -o eth0 -d 10.5.1.20 --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -p tcp -i eth2 -s 10.5.2.20 -o eth0 -d 10.5.1.20 -m multiport --dports 22,2222 -m state --state NEW,ESTABLISHED -j ACCEPT
+
+# Optional Hardening de OpenSSH Server
+# iptables -A FORWARD -p tcp -i eth2 -s 10.5.2.20 -o eth0 -d 10.5.1.20 --dport 2222 -m state --state NEW,ESTABLISHED -j ACCEPT
