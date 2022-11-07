@@ -4,13 +4,21 @@ RUN apt install -y openssh-server net-tools iputils-ping traceroute vim nano ipr
 RUN mkdir /var/run/sshd
 RUN echo 'root:root' |chpasswd
 WORKDIR /root
-# COPY ./sshd_config /etc/ssh/sshd_config
-COPY ./sshd_config /etc/ssh/
-# RUN sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config
-# RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
 RUN mkdir /root/.ssh
+# COPY ./sshd_config /etc/ssh/
+
+RUN sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes' /etc/ssh/sshd_config
+# RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
+RUN sed -ri 's/^#?Port 22/Port 2222' /etc/ssh/sshd_config
+RUN sed -ri 's/^#?PermitEmptyPasswords no/PermitEmptyPasswords no' /etc/ssh/sshd_config
+RUN sed -ri 's/^#?MaxAuthTries 6/MaxAuthTries 2' /etc/ssh/sshd_config
+RUN sed -ri 's/^#?Banner none/Banner \/etc\/.ssh/banner' /etc/ssh/sshd_config
+RUN sed -ri 's/ChallengeResponseAuthentication no/ChallengeResponseAuthentication yes/g' /etc/ssh/sshd_config
+
 # RUN touch /root/.ssh/authorized_keys
 # RUN chmod 640 /root/.ssh/authorized_keys
+COPY .id_rsa.pub .
+RUN cat .id_rsa.pub >> /root/.ssh/authorized_keys
 COPY ./banner /etc/ssh/
 COPY ./sshd /etc/pam.d/
 RUN apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
