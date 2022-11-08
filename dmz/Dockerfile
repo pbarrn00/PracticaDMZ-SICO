@@ -13,22 +13,14 @@ RUN mkdir /root/.ssh
 RUN mkdir /home/user1/.ssh
 
 # Hardening OpenSSH Server (Optional)
-RUN sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin no/' /etc/ssh/sshd_config
-# RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config                 
-RUN sed -ri 's/^#?Port 22/Port 2222/' /etc/ssh/sshd_config
-RUN sed -ri 's/^#?PermitEmptyPasswords no/PermitEmptyPasswords no/' /etc/ssh/sshd_config
-RUN sed -ri 's/^#?MaxAuthTries 6/MaxAuthTries 2/' /etc/ssh/sshd_config
-RUN sed -ri 's/^#?Banner none/Banner \/etc\/ssh\/banner/' /etc/ssh/sshd_config
-RUN sed -ri 's/ChallengeResponseAuthentication no/ChallengeResponseAuthentication yes/' /etc/ssh/sshd_config
-# RUN sed -ri 's/^#?PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
-
+COPY ./sshd_config /etc/ssh/sshd_config
 COPY ./id_rsa.pub .
 RUN cat id_rsa.pub > /root/.ssh/authorized_keys
 RUN cat id_rsa.pub > /home/user1/.ssh/authorized_keys
 RUN chmod 640 /root/.ssh/authorized_keys
-
 COPY ./banner /etc/ssh/
 COPY ./sshd /etc/pam.d/
+
 RUN apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 EXPOSE 22
 COPY ./start.sh .
