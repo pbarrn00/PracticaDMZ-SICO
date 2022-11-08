@@ -1,6 +1,6 @@
 FROM balenalib/raspberry-pi:buster
 RUN apt update
-RUN apt install -y openssh-server net-tools iputils-ping traceroute vim nano iproute2 iptables iptables-dev pkg-config nmap tcpdump apache2 wget curl libpam-google-authenticator
+RUN apt install -y openssh-server net-tools iputils-ping traceroute vim nano iproute2 iptables iptables-dev pkg-config nmap tcpdump apache2 wget curl libpam-google-authenticator fail2ban
 RUN mkdir /var/run/sshd
 RUN echo 'root:root' |chpasswd
 
@@ -20,6 +20,11 @@ RUN cat id_rsa.pub > /home/user1/.ssh/authorized_keys
 RUN chmod 640 /root/.ssh/authorized_keys
 COPY ./banner /etc/ssh/
 COPY ./sshd /etc/pam.d/
+# Fail2ban
+COPY ./jail.conf /etc/fail2ban/
+COPY ./defaults-debian.conf /etc/fail2ban/jail.d
+RUN touch /var/log/auth.log
+RUN touch /etc/fail2ban/sshd.log
 
 RUN apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 EXPOSE 22

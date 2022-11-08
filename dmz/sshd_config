@@ -31,7 +31,7 @@ Port 2222
 #LoginGraceTime 2m
 PermitRootLogin no
 #StrictModes yes
-MaxAuthTries 2
+MaxAuthTries 3
 #MaxSessions 10
 
 #PubkeyAuthentication yes
