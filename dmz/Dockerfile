@@ -10,19 +10,21 @@ RUN echo 'user1:user1' |chpasswd
 
 WORKDIR /root
 RUN mkdir /root/.ssh
+RUN mkdir /home/user1/.ssh
 
 # Hardening OpenSSH Server (Optional)
 RUN sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin no/' /etc/ssh/sshd_config
-# RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config                  Desactivamos PAM momentaneamente para poder usar public key authentication
+# RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config                 
 RUN sed -ri 's/^#?Port 22/Port 2222/' /etc/ssh/sshd_config
 RUN sed -ri 's/^#?PermitEmptyPasswords no/PermitEmptyPasswords no/' /etc/ssh/sshd_config
-# RUN sed -ri 's/^#?MaxAuthTries 6/MaxAuthTries 2/' /etc/ssh/sshd_config
+RUN sed -ri 's/^#?MaxAuthTries 6/MaxAuthTries 2/' /etc/ssh/sshd_config
 RUN sed -ri 's/^#?Banner none/Banner \/etc\/ssh\/banner/' /etc/ssh/sshd_config
 RUN sed -ri 's/ChallengeResponseAuthentication no/ChallengeResponseAuthentication yes/' /etc/ssh/sshd_config
-RUN sed -ri 's/^#?PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+# RUN sed -ri 's/^#?PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
 
 COPY ./id_rsa.pub .
 RUN cat id_rsa.pub > /root/.ssh/authorized_keys
+RUN cat id_rsa.pub > /home/user1/.ssh/authorized_keys
 RUN chmod 640 /root/.ssh/authorized_keys
 
 COPY ./banner /etc/ssh/
@@ -38,7 +40,7 @@ COPY ./index.html /var/www/html/
 # Preguntar FORBIDEN 403 cuando meto el index.html personalizado, A DELA NO LE PASA
 RUN chmod 644 /var/www/html/index.html
 RUN mkdir /etc/apache2/certificate
-RUN openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out /etc/apache2/certificate/apache-certificate.crt -keyout /etc/apache2/certificate/apache.key -subj "/C=ES/ST=CYL/L=Leon/O=ULE/CN=pdelam01"
+RUN openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out /etc/apache2/certificate/apache-certificate.crt -keyout /etc/apache2/certificate/apache.key -subj "/C=ES/ST=CYL/L=Leon/O=ULE/CN=pbarrn00"
 COPY ./000-default.conf /etc/apache2/sites-available/
 # Solucionar error de apache2: Invalid command 'SSLProxyEngine', perhaps misspelled or defined by a module not included in the server configuration
 RUN a2enmod ssl 
