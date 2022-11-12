@@ -29,6 +29,8 @@ COPY ./start.sh .
 RUN chmod +x start.sh
 CMD ["./start.sh"]
 
+RUN service fail2ban start
+
 # HTTPS Config (Optional)
 COPY ./index.html /var/www/html/
 # Preguntar FORBIDEN 403 cuando meto el index.html personalizado, A DELA NO LE PASA
