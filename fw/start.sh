@@ -3,6 +3,6 @@
 # como gateway la IP de m´aquina que queremos que ejerza como tal (en este caso, fw).
 # No podemos poner IPs repetidas en el fichero docker-compose.yml
 
-/iptables.sh
+./iptables.sh
 
 /usr/sbin/sshd -D

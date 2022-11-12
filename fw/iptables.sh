@@ -37,6 +37,10 @@ iptables -A FORWARD -p tcp -i eth2 -o eth1 -s 10.5.2.0/24 -d 10.5.0.0/24 -m stat
 iptables -A FORWARD -p udp -i eth2 -o eth1 -s 10.5.2.0/24 -d 10.5.0.0/24 -m state --state NEW -j ACCEPT
 iptables -A FORWARD -p icmp -i eth2 -o eth1 -s 10.5.2.0/24 -d 10.5.0.0/24 -m state --state NEW -j ACCEPT
 
+iptables -A FORWARD -p tcp -i eth2 -o eth0 -s 10.5.2.0/24 -d 10.5.1.0/24 -m state --state NEW -j ACCEPT
+iptables -A FORWARD -p udp -i eth2 -o eth0 -s 10.5.2.0/24 -d 10.5.1.0/24 -m state --state NEW -j ACCEPT
+iptables -A FORWARD -p icmp -i eth2 -o eth0 -s 10.5.2.0/24 -d 10.5.1.0/24 -m state --state NEW -j ACCEPT
+
 # Todos los paquetes que abandonen fw por la interfaz externa y que provengan de la red interna (10.5.2.0/24)
 # deben cambiar su IP de origen para que sea la de fw en esa interfaz (10.5.0.1)                                        *PREGUNTA: ¿Funcionaría igual con -i eth2 en vez de -s red?*
 iptables -t nat -A POSTROUTING -o eth1 -s 10.5.2.0/24 -j SNAT --to 10.5.0.1
