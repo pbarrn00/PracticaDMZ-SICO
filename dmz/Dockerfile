@@ -23,14 +23,6 @@ COPY ./sshd /etc/pam.d/
 # Fail2ban
 COPY ./jail.conf /etc/fail2ban/
 
-RUN apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-EXPOSE 22
-COPY ./start.sh .
-RUN chmod +x start.sh
-CMD ["./start.sh"]
-
-RUN service fail2ban start
-
 # HTTPS Config (Optional)
 COPY ./index.html /var/www/html/
 # Preguntar FORBIDEN 403 cuando meto el index.html personalizado, A DELA NO LE PASA
@@ -40,6 +32,10 @@ RUN openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out /etc/a
 COPY ./000-default.conf /etc/apache2/sites-available/
 # Solucionar error de apache2: Invalid command 'SSLProxyEngine', perhaps misspelled or defined by a module not included in the server configuration
 RUN a2enmod ssl 
-RUN service apache2 restart
 
 
+RUN apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+EXPOSE 22
+COPY ./start.sh .
+RUN chmod +x start.sh
+CMD ["./start.sh"]
