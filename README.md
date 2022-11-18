@@ -82,6 +82,13 @@ Por alguna razón desconocida, el servicio fail2ban no se inicia automáticament
 service fail2ban start
 ```
 
+#### Añadir la clave pública al directorio DMZ ♿
+Si queremos probar la funcionalidad del inicio de sesión SSH debemos añadir una clave publica (por ejemplo la del equipo anfitrión) al directorio dmz como se indica en el apartado de archivos. El nombre del archivo de la clave pública debe ser id_rsa.pub como se indica en el inventario de archivos ya que en el Dockerfile se copia esa clave en los authorized_keys del servidor SSH de la DMZ.
+```
+ssh-keygen
+cp ~/.ssh/id_rsa.pub /path/to/DMZ/practice/dmz/id_rsa.pub
+```
+
 ## Direcciones IP 💻
 
 #### Internal1
